@@ -29,8 +29,6 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          ref: $(git branch --show-current)
 
       - name: Set up Java
         uses: actions/setup-java@v1
@@ -105,12 +103,12 @@ jobs:
           rm $PLUGIN_FILE
           rm $PLUGIN_TEMP 
           mv $TEMP_FILE $PLUGIN_FILE
-      - name: create pull request
-        uses: peter-evans/create-pull-request@v3
+
+      - name: Commit plugins.json
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-            token: ${{ secrets.GITHUB_TOKEN }}
-            commit-message: Update plugin repository file
-            title: 'Update Plugin Repository with Latest Release'
-            body: |
-              - Updating plugins.json release definition file 
-            branch: ${{ steps.get_project_info.outputs.BRANCH }}
+          branch: ${{ steps.get_project_info.outputs.BRANCH }}
+          push_options: '--force'
+          commit_message: Update plugins.json
+          commit_user_name: Release Bot
+          commit_user_email: bot@bot.io
