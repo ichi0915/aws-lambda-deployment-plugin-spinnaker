@@ -24,6 +24,9 @@ jobs:
     name: Release Plugin
     runs-on: ubuntu-latest
     steps:
+      - name: Fix up git URLs
+        run: echo -e '[url "https://github.com/"]\n  insteadOf = "git://github.com/"' >> ~/.gitconfig
+
       - uses: actions/setup-java@v1
         with:
           java-version: '11.0.5'
@@ -40,7 +43,7 @@ jobs:
         run: ./gradlew test
 
       - name: build
-        run: ./gradlew releaseBundle
+        run: ./gradlew releaseBundle -x test
 
       - name: get project info
         id: get_project_info
