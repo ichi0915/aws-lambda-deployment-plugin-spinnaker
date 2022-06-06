@@ -56,8 +56,8 @@ jobs:
           echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
           echo ::set-output name=REPO::${GITHUB_REPOSITORY}
           echo ::set-output name=BRANCH::$(git branch --show-current)
-          echo $steps.get_project_info.outputs.BRANCH
-          echo $(git branch --show-current)
+          echo "$steps.get_project_info.outputs.BRANCH"
+          echo "$(git branch --show-current)"
  
       - name: create release
         id: create_release
@@ -109,7 +109,7 @@ jobs:
       - name: Commit plugins.json
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          branch: steps.get_project_info.outputs.BRANCH
+          branch: $steps.get_project_info.outputs.BRANCH
           push_options: '--force'
           commit_message: Update plugins.json
           commit_user_name: Release Bot
