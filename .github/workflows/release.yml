@@ -29,13 +29,22 @@ jobs:
 
       - uses: actions/setup-java@v1
         with:
-          java-version: '11.0.5'
-          java-package: jdk 
+          java-version: 11
+
+      - uses: actions/cache@v1
+        with:
+          path: ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: download jq
         run: sudo apt-get install jq
 
-      - name: checkout code
+      - name: Checkout Code
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.TOKEN }}
 #        with:
 #          ref: 'master'
 
