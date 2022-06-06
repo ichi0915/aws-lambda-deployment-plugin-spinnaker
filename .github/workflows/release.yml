@@ -35,6 +35,10 @@ jobs:
         with:
           java-version: 11
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 12.16.0
+
       - name: download jq
         run: sudo apt-get install jq
 
