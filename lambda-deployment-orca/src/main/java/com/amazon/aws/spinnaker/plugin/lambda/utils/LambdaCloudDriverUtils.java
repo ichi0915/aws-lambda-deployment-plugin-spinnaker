@@ -83,6 +83,7 @@ public class LambdaCloudDriverUtils {
 
     public LambdaCloudDriverResponse postToCloudDriver(String endPointUrl, String jsonString, int retries) {
         final RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonString);
+        System.out.println("body: " + body);
         final Request request = new Request.Builder()
                 .url(endPointUrl)
                 .headers(buildHeaders())

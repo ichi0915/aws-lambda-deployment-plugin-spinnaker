@@ -83,6 +83,8 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
     private LambdaCloudOperationOutput putReservedConcurrency( LambdaConcurrencyInput inp) {
         String rawString = utils.asString(inp);
         String endPoint = cloudDriverUrl + CLOUDDRIVER_RESERVED_CONCURRENCY_PATH;
+        System.out.println("endppoint: " + endPoint);
+        System.out.println("rawString: " + rawString);
         LambdaCloudDriverResponse respObj = utils.postToCloudDriver(endPoint, rawString);
         String url = cloudDriverUrl + respObj.getResourceUri();
         System.out.println("Posted to cloudDriver for putReservedConcurrency: " + url);
