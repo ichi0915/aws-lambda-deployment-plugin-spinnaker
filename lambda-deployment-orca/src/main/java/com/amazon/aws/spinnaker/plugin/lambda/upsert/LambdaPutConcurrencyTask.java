@@ -77,9 +77,10 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
             System.out.println("diferente de null");
             return putReservedConcurrency(inp);
         }
-        System.out.println("Es igual a null");
+        System.out.println("Es igual a: " + inp.getReservedConcurrentExecutions());
+        return putReservedConcurrency(inp);
         //return deleteReservedConcurrency();
-        return LambdaCloudOperationOutput.builder().build();
+//        return LambdaCloudOperationOutput.builder().build();
     }
 
     private LambdaCloudOperationOutput putReservedConcurrency( LambdaConcurrencyInput inp) {
