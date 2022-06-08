@@ -50,6 +50,11 @@ public class LambdaSpringLoaderPlugin extends SpringLoaderPlugin {
     }
 
     @Override
+    public void start() {
+        System.out.println("starting..poking_around");
+    }
+
+    @Override
     public void registerBeanDefinitions(BeanDefinitionRegistry registry) {
         List<Pair<String, Class>> beanList =  Arrays.asList(
                 Pair.of("lambdaPluginConfig", Config.class),
