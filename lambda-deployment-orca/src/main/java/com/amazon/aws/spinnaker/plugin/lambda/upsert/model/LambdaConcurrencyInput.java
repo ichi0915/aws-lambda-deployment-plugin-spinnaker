@@ -25,5 +25,5 @@ import lombok.Data;
 public class LambdaConcurrencyInput {
     private String account, appName, credentials,region ,functionName;
     private String qualifier, aliasName;
-    private int reservedConcurrentExecutions, provisionedConcurrentExecutions;
+    private Integer reservedConcurrentExecutions, provisionedConcurrentExecutions;
 }
