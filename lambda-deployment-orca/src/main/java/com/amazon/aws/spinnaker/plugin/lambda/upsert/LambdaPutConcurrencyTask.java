@@ -20,6 +20,7 @@ import com.amazon.aws.spinnaker.plugin.lambda.LambdaStageBaseTask;
 import com.amazon.aws.spinnaker.plugin.lambda.upsert.model.LambdaConcurrencyInput;
 import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaCloudDriverResponse;
 import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaCloudDriverUtils;
+import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaDefinition;
 import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaStageConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.spinnaker.orca.api.pipeline.TaskResult;
@@ -56,6 +57,10 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
         prepareTask(stage);
         LambdaConcurrencyInput inp = utils.getInput(stage, LambdaConcurrencyInput.class);
         inp.setAppName(stage.getExecution().getApplication());
+        LambdaDefinition lambdaDefinition = utils.retrieveLambdaFromCache(stage,false);
+        System.out.println("lambdaDefinition: " + lambdaDefinition);
+        String result = utils.getFromCloudDriver(cloudDriverUrl+"/functions?region="+inp.getRegion()+"&account="+inp.getAccount()+"&functionName="+inp.getFunctionName());
+        System.out.println("result: " + result);
 //        if ((inp.getProvisionedConcurrentExecutions() == 0)  && (inp.getReservedConcurrentExecutions() == null)){
 //            addToOutput(stage, "LambdaPutConcurrencyTask" , "Lambda concurrency : nothing to update");
 //            return taskComplete(stage);
