@@ -26,5 +26,5 @@ public class LambdaConcurrencyInput {
     private String account, appName, credentials,region ,functionName;
     private String qualifier, aliasName;
     private Integer reservedConcurrentExecutions;
-    private int provisionedConcurrentExecutions;
+    private Integer provisionedConcurrentExecutions;
 }

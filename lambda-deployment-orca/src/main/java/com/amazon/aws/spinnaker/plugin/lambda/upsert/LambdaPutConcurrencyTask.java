@@ -73,13 +73,11 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
 
     private LambdaCloudOperationOutput putConcurrency(LambdaConcurrencyInput inp) {
         inp.setCredentials(inp.getAccount());
-        if (inp.getProvisionedConcurrentExecutions() != 0 &&
+        if (inp.getProvisionedConcurrentExecutions() != null &&
                 StringUtils.isNotNullOrEmpty(inp.getAliasName())) {
             return putProvisionedConcurrency(inp);
         }
         if (inp.getReservedConcurrentExecutions() != null) {
-            logger.debug("logger?");
-            System.out.println("diferente de null");
             return putReservedConcurrency(inp);
         }
         System.out.println("Es igual a: " + inp.getReservedConcurrentExecutions());
