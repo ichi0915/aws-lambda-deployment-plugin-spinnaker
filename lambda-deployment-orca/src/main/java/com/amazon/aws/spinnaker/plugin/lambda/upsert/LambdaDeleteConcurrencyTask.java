@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @Component
 public class LambdaDeleteConcurrencyTask implements LambdaStageBaseTask {
-    private static Logger logger = LoggerFactory.getLogger(LambdaPutConcurrencyTask.class);
+    private static Logger logger = LoggerFactory.getLogger(LambdaDeleteConcurrencyTask.class);
     private static final ObjectMapper objMapper = new ObjectMapper();
 
     private static String CLOUDDRIVER_DELETE_PROVISIONED_CONCURRENCY_PATH = "/aws/ops/deleteLambdaProvisionedConcurrency";
@@ -40,7 +40,7 @@ public class LambdaDeleteConcurrencyTask implements LambdaStageBaseTask {
     @Override
     public TaskResult execute(@NotNull StageExecution stage) {
         System.out.println("llame a delete");
-        logger.debug("Executing LambdaPutConcurrencyTask...");
+        logger.debug("Executing LambdaDeleteConcurrencyTask...");
         cloudDriverUrl = props.getCloudDriverBaseUrl();
         prepareTask(stage);
         LambdaConcurrencyInput inp = utils.getInput(stage, LambdaConcurrencyInput.class);
