@@ -23,6 +23,7 @@ import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaCloudDriverUtils;
 import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaDefinition;
 import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaGetInput;
 import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaStageConstants;
+import com.amazonaws.services.lambda.model.Concurrency;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.spinnaker.orca.api.pipeline.TaskResult;
 import com.netflix.spinnaker.orca.api.pipeline.models.ExecutionStatus;
@@ -63,8 +64,10 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
         LambdaGetInput getInp = utils.getInput(stage, LambdaGetInput.class);
         LambdaDefinition lambdaDefinition = utils.retrieveLambdaFromCache(getInp);
 
-        System.out.println("reserved: " +  lambdaDefinition.getConcurrency().getReservedConcurrentExecutions());
-//        System.out.println("provisioned: " +  lambdaDefinition.getProvisionedConcurrency());
+        Concurrency con = lambdaDefinition.getConcurrency();
+        Integer reserved = lambdaDefinition.getConcurrency().getReservedConcurrentExecutions();
+        System.out.println("concurrency: " +  con);
+        System.out.println("reserved: " +  reserved);
         if (lambdaDefinition.getConcurrency().getReservedConcurrentExecutions().equals(inp.getReservedConcurrentExecutions()))
         {
             System.out.println("reserved es igual");
