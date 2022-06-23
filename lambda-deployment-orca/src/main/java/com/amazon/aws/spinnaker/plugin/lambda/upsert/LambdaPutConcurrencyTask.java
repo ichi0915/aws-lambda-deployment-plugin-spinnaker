@@ -37,6 +37,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
     private static Logger logger = LoggerFactory.getLogger(LambdaPutConcurrencyTask.class);
@@ -60,18 +62,14 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
         prepareTask(stage);
         LambdaConcurrencyInput inp = utils.getInput(stage, LambdaConcurrencyInput.class);
         inp.setAppName(stage.getExecution().getApplication());
-
         LambdaGetInput getInp = utils.getInput(stage, LambdaGetInput.class);
-        LambdaDefinition lambdaDefinition = utils.retrieveLambdaFromCache(getInp);
-        System.out.println("lambdaDefinition:" + lambdaDefinition);
+        getInp.setAppName(stage.getExecution().getApplication());
 
-        Concurrency con = lambdaDefinition.getConcurrency();
-        Integer reserved = lambdaDefinition.getConcurrency().getReservedConcurrentExecutions();
-        System.out.println("concurrency: " +  con);
-        System.out.println("reserved: " +  reserved);
-        if (lambdaDefinition.getConcurrency().getReservedConcurrentExecutions().equals(inp.getReservedConcurrentExecutions()))
+        LambdaDefinition lambdaDefinition = utils.retrieveLambdaFromCache(getInp);
+        if (lambdaDefinition.getConcurrency().getReservedConcurrentExecutions().equals(inp.getReservedConcurrentExecutions())
+            && Optional.ofNullable(inp.getProvisionedConcurrentExecutions()).orElse(0) == 0)
         {
-            System.out.println("reserved es igual");
+            System.out.println("reserved es igual: " + lambdaDefinition.getConcurrency().getReservedConcurrentExecutions());
             addToOutput(stage, "LambdaPutConcurrencyTask" , "Lambda concurrency : nothing to update");
             return taskComplete(stage);
         }
