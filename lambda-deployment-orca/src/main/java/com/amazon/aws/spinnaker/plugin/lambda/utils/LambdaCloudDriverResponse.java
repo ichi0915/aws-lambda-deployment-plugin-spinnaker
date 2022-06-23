@@ -27,7 +27,4 @@ import org.slf4j.LoggerFactory;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LambdaCloudDriverResponse {
     private String id, resourceUri;
-    private Integer provisionedConcurrency;
-    private Integer reservedConcurrency;
-
 }
