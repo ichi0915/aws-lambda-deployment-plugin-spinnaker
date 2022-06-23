@@ -63,9 +63,9 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
         LambdaGetInput getInp = utils.getInput(stage, LambdaGetInput.class);
         LambdaDefinition lambdaDefinition = utils.retrieveLambdaFromCache(getInp);
 
-        System.out.println("reserved: " +  lambdaDefinition.getReservedConcurrency().getReservedConcurrentExecutions());
+        System.out.println("reserved: " +  lambdaDefinition.getConcurrency().getReservedConcurrentExecutions());
 //        System.out.println("provisioned: " +  lambdaDefinition.getProvisionedConcurrency());
-        if (lambdaDefinition.getReservedConcurrency().getReservedConcurrentExecutions().equals(inp.getReservedConcurrentExecutions()))
+        if (lambdaDefinition.getConcurrency().getReservedConcurrentExecutions().equals(inp.getReservedConcurrentExecutions()))
         {
             System.out.println("reserved es igual");
             addToOutput(stage, "LambdaPutConcurrencyTask" , "Lambda concurrency : nothing to update");
