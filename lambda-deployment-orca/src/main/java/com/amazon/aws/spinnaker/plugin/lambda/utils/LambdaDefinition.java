@@ -17,6 +17,7 @@
 package com.amazon.aws.spinnaker.plugin.lambda.utils;
 
 import com.amazonaws.services.lambda.model.AliasConfiguration;
+import com.amazonaws.services.lambda.model.Concurrency;
 import com.amazonaws.services.lambda.model.EventSourceMappingConfiguration;
 import com.amazonaws.services.lambda.model.FunctionCodeLocation;
 import com.amazonaws.services.lambda.model.FunctionConfiguration;
@@ -46,6 +47,5 @@ public class LambdaDefinition extends FunctionConfiguration {
     private String stateReason;
     private String stateReasonCode;
 
-    private Integer provisionedConcurrency;
-    private Integer reservedConcurrency;
+    private Concurrency reservedConcurrency;
 }
