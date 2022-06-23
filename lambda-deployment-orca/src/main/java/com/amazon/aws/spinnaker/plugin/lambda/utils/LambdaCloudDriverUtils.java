@@ -194,6 +194,7 @@ public class LambdaCloudDriverUtils {
     }
 
     public String getFromCloudDriver(String endPoint) {
+        System.out.println("endpoint getFromClouddriver: " + endPoint);
         Request request = new Request.Builder()
                 .url(endPoint)
                 .headers(buildHeaders())
