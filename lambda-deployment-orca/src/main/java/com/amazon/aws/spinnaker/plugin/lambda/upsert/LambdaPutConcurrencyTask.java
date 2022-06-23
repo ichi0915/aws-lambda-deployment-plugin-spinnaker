@@ -63,6 +63,7 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
 
         LambdaGetInput getInp = utils.getInput(stage, LambdaGetInput.class);
         LambdaDefinition lambdaDefinition = utils.retrieveLambdaFromCache(getInp);
+        System.out.println("lambdaDefinition:" + lambdaDefinition);
 
         Concurrency con = lambdaDefinition.getConcurrency();
         Integer reserved = lambdaDefinition.getConcurrency().getReservedConcurrentExecutions();
