@@ -28,7 +28,6 @@ import com.netflix.spinnaker.orca.api.pipeline.models.StageExecution;
 import com.netflix.spinnaker.orca.clouddriver.config.CloudDriverConfigurationProperties;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.pf4j.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,18 +59,20 @@ public class LambdaDeleteConcurrencyTask implements LambdaStageBaseTask {
         LambdaConcurrencyInput inp = utils.getInput(stage, LambdaConcurrencyInput.class);
         inp.setAppName(stage.getExecution().getApplication());
 
-        if (Optional.ofNullable(inp.getProvisionedConcurrentExecutions()).orElse(0) != 0 && inp.getReservedConcurrentExecutions() != null)
-        {
-            System.out.println("nothing to delete");
+        LambdaCloudOperationOutput output;
+        if (stage.getType().equals("Aws.LambdaDeploymentStage") && inp.getReservedConcurrentExecutions() == null) {
+            System.out.println("entre al if de deployment");
+            output = deleteReservedConcurrency(inp);
+        } else {
             addToOutput(stage, "LambdaDeleteConcurrencyTask" , "Lambda delete concurrency : nothing to delete");
             return taskComplete(stage);
         }
-
-        LambdaCloudOperationOutput output;
-        if (stage.getType().equals("Aws.LambdaDeploymentStage")) {
-            output = deleteReservedConcurrency(inp);
-        } else {
+        if (stage.getType().equals("Aws.LambdaTrafficRoutingStage") && Optional.ofNullable(inp.getProvisionedConcurrentExecutions()).orElse(0) == 0) {
+            System.out.println("entre al if de traffic");
             output = deleteProvisionedConcurrency(inp);
+        } else {
+            addToOutput(stage, "LambdaDeleteConcurrencyTask" , "Lambda delete concurrency : nothing to delete");
+            return taskComplete(stage);
         }
         addCloudOperationToContext(stage, output, LambdaStageConstants.deleteConcurrencyUrlKey);
         return taskComplete(stage);
