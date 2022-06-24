@@ -54,7 +54,6 @@ public class LambdaDeleteConcurrencyTask implements LambdaStageBaseTask {
     @NotNull
     @Override
     public TaskResult execute(@NotNull StageExecution stage) {
-        System.out.println("llame a delete");
         logger.debug("Executing LambdaDeleteConcurrencyTask...");
         cloudDriverUrl = props.getCloudDriverBaseUrl();
         prepareTask(stage);

@@ -46,6 +46,4 @@ public class LambdaDefinition extends FunctionConfiguration {
     private String state;
     private String stateReason;
     private String stateReasonCode;
-
-    private Concurrency concurrency;
 }
