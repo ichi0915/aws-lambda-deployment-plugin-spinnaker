@@ -67,21 +67,14 @@ public class LambdaDeleteConcurrencyTask implements LambdaStageBaseTask {
             return taskComplete(stage);
         }
 
-        LambdaCloudOperationOutput output = deleteConcurrency(inp);
+        LambdaCloudOperationOutput output;
+        if (stage.getType().equals("Aws.LambdaDeploymentStage")) {
+            output = deleteReservedConcurrency(inp);
+        } else {
+            output = deleteProvisionedConcurrency(inp);
+        }
         addCloudOperationToContext(stage, output, LambdaStageConstants.deleteConcurrencyUrlKey);
         return taskComplete(stage);
-    }
-
-    private LambdaCloudOperationOutput deleteConcurrency(LambdaConcurrencyInput inp) {
-        inp.setCredentials(inp.getAccount());
-        if (inp.getProvisionedConcurrentExecutions() == null
-                && StringUtils.isNotNullOrEmpty(inp.getAliasName())) {
-            return deleteProvisionedConcurrency(inp);
-        }
-        if (inp.getReservedConcurrentExecutions() == null) {
-            return deleteReservedConcurrency(inp);
-        }
-        return LambdaCloudOperationOutput.builder().build();
     }
 
     private LambdaCloudOperationOutput deleteProvisionedConcurrency(LambdaConcurrencyInput inp) {
