@@ -23,7 +23,6 @@ import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaCloudDriverUtils;
 import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaDefinition;
 import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaGetInput;
 import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaStageConstants;
-import com.amazonaws.services.lambda.model.Concurrency;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.spinnaker.orca.api.pipeline.TaskResult;
 import com.netflix.spinnaker.orca.api.pipeline.models.ExecutionStatus;
