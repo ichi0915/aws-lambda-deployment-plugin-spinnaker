@@ -95,7 +95,6 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
         logger.debug("Posted to cloudDriver for putReservedConcurrency: " + url);
         LambdaCloudOperationOutput operationOutput = LambdaCloudOperationOutput.builder().resourceId(respObj.getId()).url(url).build();
         System.out.println("operationOutput: " + operationOutput.toString());
-        operationOutput.getOutputMap().forEach((k, v) -> System.out.print("key " + k + ": " + v));
         return operationOutput;
     }
 
