@@ -26,6 +26,7 @@ import com.netflix.spinnaker.orca.api.pipeline.TaskResult;
 import com.netflix.spinnaker.orca.api.pipeline.models.ExecutionStatus;
 import com.netflix.spinnaker.orca.api.pipeline.models.StageExecution;
 import com.netflix.spinnaker.orca.clouddriver.config.CloudDriverConfigurationProperties;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.pf4j.util.StringUtils;
@@ -51,9 +52,13 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
     private LambdaCloudDriverUtils utils;
     private  String cloudDriverUrl;
 
+    @SneakyThrows
     @NotNull
     @Override
     public TaskResult execute(@NotNull StageExecution stage) {
+        System.out.println("im waiting 4 minutes");
+        Thread.sleep(240000);
+        System.out.println("im done waiting");
         logger.debug("Executing LambdaPutConcurrencyTask...");
         cloudDriverUrl = props.getCloudDriverBaseUrl();
         prepareTask(stage);
