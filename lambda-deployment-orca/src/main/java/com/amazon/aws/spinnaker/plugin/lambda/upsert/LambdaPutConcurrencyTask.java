@@ -56,11 +56,6 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
     @NotNull
     @Override
     public TaskResult execute(@NotNull StageExecution stage) {
-        if (stage.getType().equals("Aws.LambdaTrafficRoutingStage")) {
-            System.out.println("im waiting 4 minutes");
-            Thread.sleep(240000);
-            System.out.println("im done waiting");
-        }
         logger.debug("Executing LambdaPutConcurrencyTask...");
         cloudDriverUrl = props.getCloudDriverBaseUrl();
         prepareTask(stage);
@@ -71,6 +66,12 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
         {
             addToOutput(stage, "LambdaPutConcurrencyTask" , "Lambda concurrency : nothing to update");
             return taskComplete(stage);
+        }
+
+        if (stage.getType().equals("Aws.LambdaTrafficRoutingStage")) {
+            System.out.println("im waiting");
+            Thread.sleep(inp.getProvisionedConcurrentExecutions() * 30000);
+            System.out.println("im done waiting");
         }
 
         LambdaCloudOperationOutput output = putConcurrency(inp);

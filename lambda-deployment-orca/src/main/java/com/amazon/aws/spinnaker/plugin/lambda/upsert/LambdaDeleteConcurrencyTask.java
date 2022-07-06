@@ -59,6 +59,9 @@ public class LambdaDeleteConcurrencyTask implements LambdaStageBaseTask {
         LambdaConcurrencyInput inp = utils.getInput(stage, LambdaConcurrencyInput.class);
         inp.setAppName(stage.getExecution().getApplication());
 
+        String strategy = (String) stage.getContext().get("deploymentStrategy");
+        System.out.println("strategy: " + strategy);
+
         LambdaCloudOperationOutput output;
         if (stage.getType().equals("Aws.LambdaDeploymentStage") && inp.getReservedConcurrentExecutions() == null) {
             System.out.println("entre al if de deployment");
