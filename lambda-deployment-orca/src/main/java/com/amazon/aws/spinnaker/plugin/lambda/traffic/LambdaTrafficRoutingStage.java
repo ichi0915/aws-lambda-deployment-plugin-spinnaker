@@ -23,6 +23,7 @@ import com.amazon.aws.spinnaker.plugin.lambda.verify.LambdaVerificationTask;
 import com.netflix.spinnaker.orca.api.pipeline.graph.StageDefinitionBuilder;
 import com.netflix.spinnaker.orca.api.pipeline.graph.TaskNode;
 import com.netflix.spinnaker.orca.api.pipeline.models.StageExecution;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -38,11 +39,17 @@ public class LambdaTrafficRoutingStage implements StageDefinitionBuilder {
         logger.debug("Constructing Aws.LambdaTrafficRoutingStage");
     }
 
+    @SneakyThrows
     @Override
     public void taskGraph(@Nonnull StageExecution stage, @Nonnull TaskNode.Builder builder) {
         logger.debug("taskGraph for Aws.LambdaTrafficRoutingStage");
         builder.withTask("lambdaTrafficUpdateTask", LambdaTrafficUpdateTask.class);
         builder.withTask("lambdaTrafficUpdateVerificationTask", LambdaTrafficUpdateVerificationTask.class);
+
+        System.out.println("im waiting 4 minutes");
+        Thread.sleep(240000);
+        System.out.println("im done waiting");
+
         builder.withTask("lambdaPutConcurrencyTask", LambdaPutConcurrencyTask.class);
         builder.withTask("lambdaVerificationTask", LambdaVerificationTask.class);
         builder.withTask("lambdaEventConfigurationTask", LambdaUpdateEventConfigurationTask.class);
