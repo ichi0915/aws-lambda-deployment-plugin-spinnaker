@@ -62,6 +62,9 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
         LambdaConcurrencyInput inp = utils.getInput(stage, LambdaConcurrencyInput.class);
         inp.setAppName(stage.getExecution().getApplication());
 
+        String strategy = (String) stage.getContext().get("deploymentStrategy");
+        System.out.println("strategy: " + strategy);
+
         if (inp.getReservedConcurrentExecutions() == null && Optional.ofNullable(inp.getProvisionedConcurrentExecutions()).orElse(0) == 0)
         {
             addToOutput(stage, "LambdaPutConcurrencyTask" , "Lambda concurrency : nothing to update");
