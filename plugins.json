@@ -134,6 +134,15 @@
         "preferred": false,
         "compatibility": [],
         "url": "https://github.com/spinnaker-plugins/aws-lambda-deployment-plugin-spinnaker/releases/download/1.0.10/aws-lambda-deployment-plugin-spinnaker-1.0.10.zip"
+      },
+      {
+        "version": "88.0.3",
+        "date": "2022-07-07T16:01:18.903313Z",
+        "requires": "orca>=0.0.0,deck>=0.0.0",
+        "sha512sum": "b5a84047d8fdc6079176367684d59139876e7657b738b1614961caff710aec813444fc90a0979ae20c5a7fcb075434df73c1133d5224b2a5d58213e952754790",
+        "preferred": false,
+        "compatibility": [],
+        "url": "https://github.com/ichi0915/aws-lambda-deployment-plugin-spinnaker/releases/download/88.0.3/aws-lambda-deployment-plugin-spinnaker-88.0.3.zip"
       }
     ]
   }
