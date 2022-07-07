@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -58,12 +59,15 @@ public class LambdaDeleteConcurrencyTask implements LambdaStageBaseTask {
         prepareTask(stage);
         LambdaConcurrencyInput inp = utils.getInput(stage, LambdaConcurrencyInput.class);
         inp.setAppName(stage.getExecution().getApplication());
+        String strategy = (String) stage.getContext().get("deploymentStrategy");
 
         LambdaCloudOperationOutput output;
         if (stage.getType().equals("Aws.LambdaDeploymentStage") && inp.getReservedConcurrentExecutions() == null) {
             output = deleteReservedConcurrency(inp);
-        } else if (stage.getType().equals("Aws.LambdaTrafficRoutingStage") && Optional.ofNullable(inp.getProvisionedConcurrentExecutions()).orElse(0) == 0) {
-            output = deleteProvisionedConcurrency(inp);
+        } else if (stage.getType().equals("Aws.LambdaTrafficRoutingStage")
+            && Optional.ofNullable(inp.getProvisionedConcurrentExecutions()).orElse(0) == 0
+            && !Objects.equals(strategy, "$WEIGHTED")) {
+                output = deleteProvisionedConcurrency(inp);
         } else {
             addToOutput(stage, "LambdaDeleteConcurrencyTask" , "Lambda delete concurrency : nothing to delete");
             return taskComplete(stage);

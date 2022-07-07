@@ -26,6 +26,7 @@ import com.netflix.spinnaker.orca.api.pipeline.TaskResult;
 import com.netflix.spinnaker.orca.api.pipeline.models.ExecutionStatus;
 import com.netflix.spinnaker.orca.api.pipeline.models.StageExecution;
 import com.netflix.spinnaker.orca.clouddriver.config.CloudDriverConfigurationProperties;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.pf4j.util.StringUtils;
@@ -34,7 +35,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
@@ -51,6 +54,7 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
     private LambdaCloudDriverUtils utils;
     private  String cloudDriverUrl;
 
+    @SneakyThrows
     @NotNull
     @Override
     public TaskResult execute(@NotNull StageExecution stage) {
@@ -65,6 +69,8 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
             addToOutput(stage, "LambdaPutConcurrencyTask" , "Lambda concurrency : nothing to update");
             return taskComplete(stage);
         }
+
+        this.checkPublishBeforeRouting(stage);
 
         LambdaCloudOperationOutput output = putConcurrency(inp);
         addCloudOperationToContext(stage, output, LambdaStageConstants.putConcurrencyUrlKey);
@@ -113,5 +119,41 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
 
     @Override
     public void onCancel(@NotNull StageExecution stage) {
+    }
+
+    /*
+     * Why the sleep for 3 min
+     *
+     * There is an issue with AWS lambdas that if you update aliasName to newly publish version
+     * and then change the Provisioned Concurrency it will fail with the following error:
+     *
+     * Alias with weights cannot be used with Provisioned Concurrency.
+     *
+     * So to fix that issue we added the sleep and some logic to only run
+     * the sleep when it's needed.
+     *
+     */
+    private void checkPublishBeforeRouting  (StageExecution stage) throws InterruptedException {
+        List<StageExecution> stages = stage.getExecution().getStages().stream()
+                .filter(s -> s.getType().equals("Aws.LambdaDeploymentStage")).collect(Collectors.toList());
+        String currentRefId = stage.getRefId();
+        String currentFunctionName = (String) stage.getContext().get("functionName");
+
+        boolean isPublish = false;
+        for (StageExecution s : stages) {
+            String deploymentStageRefId = s.getRefId();
+            if (s.getContext().get("functionName").equals(currentFunctionName)) {
+                if (Integer.parseInt(deploymentStageRefId) < Integer.parseInt(currentRefId)
+                        && !s.getStatus().equals(ExecutionStatus.SKIPPED)) {
+                    isPublish = s.getContext().get("publish").equals(true);
+                    break;
+                }
+            }
+        }
+
+        if (stage.getType().equals("Aws.LambdaTrafficRoutingStage") && isPublish) {
+            logger.info("Waiting 3 minutes because previous stages did a publish");
+            Thread.sleep(180000);
+        }
     }
 }
