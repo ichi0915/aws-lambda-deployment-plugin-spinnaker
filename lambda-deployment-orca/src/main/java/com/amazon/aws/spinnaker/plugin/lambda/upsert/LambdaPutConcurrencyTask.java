@@ -86,7 +86,8 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
             String deploymentStageRefId = s.getRefId();
             if (s.getContext().get("functionName").equals(currentFunctionName)) {
                 System.out.println("DeploymentStage - FunctionName: " + s.getContext().get("functionName"));
-                if (Integer.parseInt(deploymentStageRefId) < Integer.parseInt(currentRefId) ) {
+                if (Integer.parseInt(deploymentStageRefId) < Integer.parseInt(currentRefId)
+                        && !s.getStatus().equals(ExecutionStatus.SKIPPED)) {
                     isPublish = s.getContext().get("publish").equals(true);
                     break;
                 }
