@@ -70,37 +70,6 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
             return taskComplete(stage);
         }
 
-
-        List<StageExecution> stages = stage.getExecution().getStages().stream()
-                .filter(s -> s.getType().equals("Aws.LambdaDeploymentStage")).collect(Collectors.toList());
-
-        stage.getExecution().getStages().forEach(s -> System.out.println("Type: " + s.getType()));
-        String currentRefId = stage.getRefId();
-        System.out.println("currentRefId: " + currentRefId);
-        String currentFunctionName = (String) stage.getContext().get("functionName");
-        System.out.println("currentFunctionName: " + currentFunctionName);
-
-
-        boolean isPublish = false;
-        for (StageExecution s : stages) {
-            String deploymentStageRefId = s.getRefId();
-            if (s.getContext().get("functionName").equals(currentFunctionName)) {
-                System.out.println("DeploymentStage - FunctionName: " + s.getContext().get("functionName"));
-                if (Integer.parseInt(deploymentStageRefId) < Integer.parseInt(currentRefId)
-                        && !s.getStatus().equals(ExecutionStatus.SKIPPED)) {
-                    isPublish = s.getContext().get("publish").equals(true);
-                    break;
-                }
-            }
-        }
-        
-        if (stage.getType().equals("Aws.LambdaTrafficRoutingStage") && isPublish) {
-            System.out.println("im waiting");
-            Thread.sleep(180000);
-            System.out.println("im done waiting");
-        }
-
-
         LambdaCloudOperationOutput output = putConcurrency(inp);
         addCloudOperationToContext(stage, output, LambdaStageConstants.putConcurrencyUrlKey);
         return taskComplete(stage);
