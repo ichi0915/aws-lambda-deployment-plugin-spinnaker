@@ -20,6 +20,7 @@ import com.amazon.aws.spinnaker.plugin.lambda.LambdaStageBaseTask;
 import com.amazon.aws.spinnaker.plugin.lambda.upsert.model.LambdaConcurrencyInput;
 import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaCloudDriverResponse;
 import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaCloudDriverUtils;
+import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaDefinition;
 import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaStageConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.spinnaker.orca.api.pipeline.TaskResult;
@@ -55,10 +56,27 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
     @Override
     public TaskResult execute(@NotNull StageExecution stage) {
         logger.debug("Executing LambdaPutConcurrencyTask...");
+
         cloudDriverUrl = props.getCloudDriverBaseUrl();
         prepareTask(stage);
         LambdaConcurrencyInput inp = utils.getInput(stage, LambdaConcurrencyInput.class);
         inp.setAppName(stage.getExecution().getApplication());
+
+        LambdaDefinition lambdaDef = utils.retrieveLambdaFromCache(stage, true);
+        Boolean hasRouting = lambdaDef.getAliasConfigurations().stream().filter(ld -> ld.getName() == inp.getAliasName()).anyMatch(ld -> ld.getRoutingConfig() != null);
+
+        if(hasRouting){
+            logger.info("Entro hasRouting");
+        }
+        else{
+            logger.info("Else hasRouting");
+        }
+
+        logger.info("lambdaDef: " + lambdaDef);
+        lambdaDef.getAliasConfigurations().stream().forEach( ld -> {
+            logger.info("ld Name: " + ld.getName());
+            logger.info("ld Routing Config: " + ld.getRoutingConfig());
+        });
 
         if (inp.getReservedConcurrentExecutions() == null && Optional.ofNullable(inp.getProvisionedConcurrentExecutions()).orElse(0) == 0)
         {
