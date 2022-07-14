@@ -109,7 +109,7 @@ jobs:
       - name: Commit plugins.json
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          branch: poking-around-ichi
+          branch: poking-around-ichi-2
           push_options: '--force'
           commit_message: Update plugins.json
           commit_user_name: Release Bot
