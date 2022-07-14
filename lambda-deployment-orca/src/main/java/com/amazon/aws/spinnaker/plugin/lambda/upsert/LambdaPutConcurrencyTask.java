@@ -58,12 +58,14 @@ public class LambdaPutConcurrencyTask implements LambdaStageBaseTask {
         logger.debug("Executing LambdaPutConcurrencyTask...");
 
         LambdaDefinition lambdaDef = utils.retrieveLambdaFromCache(stage, true);
+        Boolean hasRouting = lambdaDef.getAliasConfigurations().stream().anyMatch(ld -> ld.getRoutingConfig() != null);
 
-        logger.info("lambdaDef: " + lambdaDef);
-        lambdaDef.getAliasConfigurations().stream().forEach( ld -> {
-            logger.info("ld Name: " + ld.getName());
-            logger.info("ld Routing Config: " + ld.getRoutingConfig());
-        });
+        if(hasRouting){
+            logger.info("Entro hasRouting");
+        }
+        else{
+            logger.info("Else hasRouting");
+        }
 
         cloudDriverUrl = props.getCloudDriverBaseUrl();
         prepareTask(stage);
