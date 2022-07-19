@@ -62,6 +62,7 @@ public class LambdaTrafficUpdateTask implements LambdaStageBaseTask {
         BaseDeploymentStrategy deploymentStrategy = getDeploymentStrategy(stage);
         List<String> validationErrors = new ArrayList<>();
         if (!validateInput(stage, validationErrors)) {
+            System.out.println("Validation failed for traffic update task");
             logger.error("Validation failed for traffic update task");
             return this.formErrorListTaskResult(stage, validationErrors);
         }
@@ -73,8 +74,13 @@ public class LambdaTrafficUpdateTask implements LambdaStageBaseTask {
         }
         final StageExecution tmpStage = stage;
         result.getOutput().getOutputMap().forEach((x,y) -> {
+            System.out.println("result.getOutput() x: " + x + " y: " + y);
             addToTaskContext(tmpStage, (String)x, y);
         });
+
+        System.out.println("getOutput(): " + result.getOutput() );
+        System.out.println("getErrorMessage: " + result.getErrorMessage());
+        System.out.println("isSucceeded: " + result.isSucceeded());
 
         addCloudOperationToContext(stage, result.getOutput(), "url");
         return taskComplete(stage);
