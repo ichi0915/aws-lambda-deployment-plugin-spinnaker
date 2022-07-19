@@ -66,7 +66,10 @@ public class LambdaTrafficUpdateVerificationTask implements LambdaStageBaseTask 
 
         if (op.getStatus().isFailed()) {
             ExecutionStatus status = ExecutionStatus.TERMINAL;
-            return formErrorTaskResult(stage,op.getErrors().getMessage());
+            if( op.getErrors().getMessage().contains("Invalid alias configuration for Provisioned Concurrency"))
+                return formErrorTaskResult(stage, op.getErrors().getMessage() + " - You cannot update a previously weighted Lambda alias");
+            else
+                return formErrorTaskResult(stage, op.getErrors().getMessage());
         }
 
         if (!"$WEIGHTED".equals(stage.getContext().get("deploymentStrategy"))) {
