@@ -68,6 +68,7 @@ public class LambdaTrafficUpdateTask implements LambdaStageBaseTask {
         LambdaBaseStrategyInput input = deploymentStrategy.setupInput(stage);
         result = deploymentStrategy.deploy(input);
         if (!result.isSucceeded()) {
+            System.out.println("getErrorMessage: " + result.getErrorMessage());
             return formErrorTaskResult(stage, result.getErrorMessage());
         }
         final StageExecution tmpStage = stage;
