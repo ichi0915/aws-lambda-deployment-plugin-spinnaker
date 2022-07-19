@@ -51,6 +51,7 @@ public class LambdaTrafficUpdateVerificationTask implements LambdaStageBaseTask 
     @NotNull
     @Override
     public TaskResult execute(@NotNull StageExecution stage) {
+		System.out.println("LambdaTrafficUpdateVerificationTask");
         prepareTask(stage);
         Map<String, Object> stageContext = stage.getContext();
         String url = (String)stageContext.get("url");
@@ -61,13 +62,17 @@ public class LambdaTrafficUpdateVerificationTask implements LambdaStageBaseTask 
         LambdaCloudDriverTaskResults op = utils.verifyStatus(url);
 
         if (!op.getStatus().isCompleted()) {
+			System.out.println("op.getStatus().isCompleted()");
             return TaskResult.builder(ExecutionStatus.RUNNING).build();
         }
 
         if (op.getStatus().isFailed()) {
             ExecutionStatus status = ExecutionStatus.TERMINAL;
+			System.out.println("op.getErrors().getMessage(): " + op.getErrors().getMessage());
             return formErrorTaskResult(stage,op.getErrors().getMessage());
         }
+
+		System.out.println("Before WEIGHTED");
 
         if (!"$WEIGHTED".equals(stage.getContext().get("deploymentStrategy"))) {
             boolean inValid = validateWeights(stage);
